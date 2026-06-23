@@ -6,19 +6,21 @@
     <title>Painel Web Rádio & Auto-DJ Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Scripts Oficiais do Firebase (Apenas o Database necessário agora) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
 
     <div class="max-w-6xl mx-auto space-y-6">
         
+        <!-- CABEÇALHO -->
         <header class="flex justify-between items-center border-b border-slate-800 pb-4">
             <h1 class="text-2xl font-bold tracking-wider text-emerald-400 uppercase">PLAYLIST DIGITAL // AUTO-DJ PRO</h1>
-            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1 rounded-full font-mono animate-pulse">● STUDIO LIVE</span>
+            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1 rounded-full font-mono animate-pulse">● DRIVE + REALTIME</span>
         </header>
 
+        <!-- SEÇÃO: PLAYER DE MÚSICA DE FUNDO (BG MUSIC / TRILHA) -->
         <div class="bg-slate-800/80 p-4 rounded-xl border border-sky-700/50 shadow-xl">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xs font-bold text-sky-400 uppercase tracking-wide">MÚSICA DE FUNDO (TRILHA / BG MUSIC)</h2>
@@ -33,7 +35,9 @@
             </div>
         </div>
 
+        <!-- SEÇÃO: DOIS PLAYERS PRINCIPAIS -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- PLAYER DECK A -->
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-xl">
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wide">PLAYER DECK A</h2>
@@ -49,6 +53,7 @@
                 </div>
             </div>
 
+            <!-- PLAYER DECK B -->
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-xl">
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wide">PLAYER DECK B</h2>
@@ -65,31 +70,30 @@
             </div>
         </div>
 
+        <!-- SEÇÃO: STREAM DECK DE VINHETAS -->
         <div class="bg-slate-800/60 p-6 rounded-xl border border-slate-700/60 shadow-xl">
             <div class="mb-4">
-                <h2 class="text-lg font-bold tracking-wide">STREAM DECK (REALTIME DATABASE)</h2>
-                <p class="text-xs text-slate-400">Escreva o nome e carregue o áudio. Sincronização automática em nuvem.</p>
+                <h2 class="text-lg font-bold tracking-wide">STREAM DECK (LINKS DO GOOGLE DRIVE)</h2>
+                <p class="text-xs text-slate-400">Cole o link de compartilhamento público do seu Google Drive. O sistema salva as alterações sozinho.</p>
             </div>
 
+            <!-- Grade de Botões (8 Botões Fixos) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <script>
                     for (let i = 1; i <= 8; i++) {
                         document.write(`
-                        <div class="bg-slate-950 border border-slate-700 p-3 rounded-lg flex flex-col justify-between min-h-[145px] relative group">
+                        <div class="bg-slate-950 border border-slate-700 p-3 rounded-lg flex flex-col justify-between min-h-[160px] relative group">
                             
-                            <input type="text" id="name-${i}" placeholder="Vinheta ${i}" onblur="salvarApenasNome(${i})" class="bg-transparent text-center font-bold text-xs text-emerald-400 placeholder-slate-600 focus:outline-none uppercase tracking-wider mb-1 w-full border-b border-transparent focus:border-slate-800">
+                            <!-- Nome da Vinheta -->
+                            <input type="text" id="name-${i}" placeholder="Vinheta ${i}" onblur="salvarDadosBotao(${i})" class="bg-transparent text-center font-bold text-xs text-emerald-400 placeholder-slate-600 focus:outline-none uppercase tracking-wider mb-1 w-full border-b border-transparent focus:border-slate-800">
                             
-                            <input type="file" id="vinheta-${i}-file" accept="audio/*" class="hidden" onchange="atualizarBotao(${i})">
-                            
-                            <div class="text-center my-1 text-slate-500">
-                                <label for="vinheta-${i}-file" id="label-${i}" class="text-[10px] block cursor-pointer hover:text-emerald-400 transition truncate px-1">
-                                    📁 Carregar Áudio
-                                </label>
-                                <button id="btn-edit-${i}" onclick="document.getElementById('vinheta-${i}-file').click()" class="hidden text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded mx-auto mt-1 uppercase font-mono tracking-tighter">
-                                    🔄 Substituir
-                                </button>
+                            <!-- Input para Colar o Link do Drive -->
+                            <div class="my-1">
+                                <input type="text" id="url-vinheta-${i}" placeholder="Cole o Link do Drive..." onblur="salvarDadosBotao(${i})" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[10px] text-slate-400 focus:outline-none focus:border-emerald-500 placeholder-slate-700">
+                                <span id="label-status-${i}" class="text-[9px] text-slate-600 block mt-1 text-center truncate px-1">Sem mídia salva</span>
                             </div>
 
+                            <!-- Controles (Play / Stop) -->
                             <div class="grid grid-cols-3 gap-1 mt-2">
                                 <button id="btn-play-${i}" onclick="tocarVinheta(${i})" disabled class="col-span-2 bg-slate-800 text-slate-500 font-bold text-xs py-2 rounded uppercase tracking-wider transition cursor-not-allowed">
                                     PLAY
@@ -107,30 +111,30 @@
 
     </div>
 
+    <!-- CONFIGURAÇÕES E LÓGICA DO SCRIPT -->
     <script>
-        // Configuração estruturada para usar a sua URL do Realtime Database
+        // Configuração estruturada do seu Firebase Realtime Database
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY_AQUI", // <-- Pegue a API Key nas configurações do seu projeto Firebase
+            apiKey: "SUA_API_KEY_AQUI", // <-- Preencha apenas com sua API Key do Console do Firebase
             authDomain: "expedicao-sergio.firebaseapp.com",
             databaseURL: "https://expedicao-sergio-default-rtdb.firebaseio.com",
             projectId: "expedicao-sergio",
-            storageBucket: "expedicao-sergio.appspot.com", // <-- Nome padrão do Storage do seu projeto
+            storageBucket: "expedicao-sergio.appspot.com",
             messagingSenderId: "SUA_SENDER_ID_AQUI",
             appId: "SUA_APP_ID_AQUI"
         };
 
-        // Inicializa o ecossistema Firebase
+        // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const storage = firebase.storage();
 
         const bancoDeAudioVinhetas = {};
 
-        // Busca automática ao carregar a página de qualquer PC usando Realtime Database
+        // Busca automática ao carregar a página de qualquer PC
         window.onload = function() {
-            console.log("Conectando ao Realtime Database...");
+            console.log("Sincronizando com o Realtime Database...");
             
-            database.ref('stream_deck').once('value', (snapshot) => {
+            database.ref('stream_deck_drive').once('value', (snapshot) => {
                 const dadosGerais = snapshot.val();
                 if (dadosGerais) {
                     Object.keys(dadosGerais).forEach(key => {
@@ -140,13 +144,27 @@
                         if (dados.nome) {
                             document.getElementById(`name-${id}`).value = dados.nome;
                         }
-                        if (dados.audio_url) {
-                            configurarBotaoPronto(id, dados.audio_url, "Nuvem");
+                        if (dados.drive_url) {
+                            document.getElementById(`url-vinheta-${id}`).value = dados.drive_url;
+                            configurarAudioLocal(id, dados.drive_url);
                         }
                     });
                 }
             }).catch(error => console.error("Erro ao ler banco de dados:", error));
         };
+
+        // Função mágica que transforma link normal do Drive em link direto de áudio tocável
+        function converterLinkDrive(url) {
+            if (url.includes("drive.google.com")) {
+                // Pega a ID do arquivo que fica entre as barras na URL do Drive
+                const regex = /\/d\/([a-zA-Z0-9-_]+)/;
+                const match = url.match(regex);
+                if (match && match[1]) {
+                    return `https://docs.google.com/uc?export=download&id=${match[1]}`;
+                }
+            }
+            return url; // Se for um link de mp3 normal de outro site, mantém igual
+        }
 
         function extrairIdYoutube(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -154,6 +172,48 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
+        // Sincroniza e Salva Nome e Link juntos no Realtime Database ao clicar fora de qualquer campo
+        function salvarDadosBotao(id) {
+            const nomeVinheta = document.getElementById(`name-${id}`).value || `Vinheta ${id}`;
+            const linkDrive = document.getElementById(`url-vinheta-${id}`).value;
+
+            // Envia para o Firebase
+            database.ref(`stream_deck_drive/botao_${id}`).set({
+                id_botao: id,
+                nome: nomeVinheta,
+                drive_url: linkDrive
+            });
+
+            if (linkDrive) {
+                configurarAudioLocal(id, linkDrive);
+            }
+        }
+
+        // Prepara a tag de áudio no navegador
+        function configurarAudioLocal(id, urlOriginal) {
+            const labelStatus = document.getElementById(`label-status-${id}`);
+            const btnPlay = document.getElementById(`btn-play-${id}`);
+            const btnStop = document.getElementById(`btn-stop-${id}`);
+
+            if (bancoDeAudioVinhetas[id]) {
+                bancoDeAudioVinhetas[id].pause();
+            }
+
+            // Converte o link para formato streaming e aplica no player interno
+            const urlDireta = converterLinkDrive(urlOriginal);
+            bancoDeAudioVinhetas[id] = new Audio(urlDireta);
+            
+            labelStatus.textContent = "● Mídia Sincronizada";
+            labelStatus.className = "text-[9px] text-emerald-400 block mt-1 text-center font-mono";
+            
+            btnPlay.disabled = false;
+            btnPlay.className = "col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded uppercase tracking-wider transition cursor-pointer";
+            
+            btnStop.disabled = false;
+            btnStop.className = "bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-2 rounded transition cursor-pointer flex items-center justify-center";
+        }
+
+        // Controles dos Players de Mídia do YT
         function carregarPlayer(deck) {
             const inputUrl = document.getElementById(`url-${deck.toLowerCase()}`).value;
             const videoId = extrairIdYoutube(inputUrl);
@@ -189,80 +249,13 @@
             }
         }
 
-        // Salva modificações do campo de nome instantaneamente no Realtime Database
-        function salvarApenasNome(id) {
-            const nomeVinheta = document.getElementById(`name-${id}`).value;
-            database.ref(`stream_deck/botao_${id}`).update({
-                id_botao: id,
-                nome: nomeVinheta
-            });
-        }
-
-        // Upload do arquivo pro Storage + Salvamento do Link no Realtime Database
-        async function atualizarBotao(id) {
-            const fileInput = document.getElementById(`vinheta-${id}-file`);
-            const nomeVinheta = document.getElementById(`name-${id}`).value || `Vinheta ${id}`;
-            const label = document.getElementById(`label-${id}`);
-            
-            if (fileInput.files && fileInput.files[0]) {
-                const arquivo = fileInput.files[0];
-                
-                label.textContent = "⏳ Sincronizando Nuvem...";
-                label.className = "text-[10px] text-yellow-500 animate-pulse block text-center";
-
-                try {
-                    // 1. Envia o áudio para o Firebase Storage
-                    const storageRef = storage.ref(`vinhetas/botao_${id}_${arquivo.name}`);
-                    const uploadTask = await storageRef.put(arquivo);
-                    
-                    // 2. Captura a URL pública do áudio
-                    const urlAudioNuvem = await uploadTask.ref.getDownloadURL();
-                    
-                    // 3. Atualiza os dados de forma ordenada no Realtime Database
-                    await database.ref(`stream_deck/botao_${id}`).set({
-                        id_botao: id,
-                        nome: nomeVinheta,
-                        audio_url: urlAudioNuvem
-                    });
-
-                    configurarBotaoPronto(id, urlAudioNuvem, arquivo.name);
-
-                } catch (erro) {
-                    console.error("Falha ao salvar dados no Firebase:", erro);
-                    label.textContent = "❌ Erro ao salvar";
-                    label.className = "text-[10px] text-red-500 block text-center";
-                }
-            }
-        }
-
-        function configurarBotaoPronto(id, urlAudio, nomeExibicao) {
-            const label = document.getElementById(`label-${id}`);
-            const btnPlay = document.getElementById(`btn-play-${id}`);
-            const btnStop = document.getElementById(`btn-stop-${id}`);
-            const btnEdit = document.getElementById(`btn-edit-${id}`);
-
-            if(bancoDeAudioVinhetas[id]) {
-                bancoDeAudioVinhetas[id].pause();
-            }
-
-            bancoDeAudioVinhetas[id] = new Audio(urlAudio);
-            
-            label.textContent = `🔊 ${nomeExibicao}`;
-            label.className = "text-[10px] block text-emerald-500 truncate font-medium px-1";
-            
-            btnEdit.classList.remove('hidden');
-            
-            btnPlay.disabled = false;
-            btnPlay.className = "col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded uppercase tracking-wider transition cursor-pointer";
-            
-            btnStop.disabled = false;
-            btnStop.className = "bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-2 rounded transition cursor-pointer flex items-center justify-center";
-        }
-
+        // Comandos físicos do Stream Deck
         function tocarVinheta(id) {
             if (bancoDeAudioVinhetas[id]) {
                 bancoDeAudioVinhetas[id].currentTime = 0;
-                bancoDeAudioVinhetas[id].play();
+                bancoDeAudioVinhetas[id].play().catch(e => {
+                    alert("Erro ao reproduzir. Verifique se o link do Drive está configurado como PÚBLICO (Qualquer pessoa com o link).");
+                });
             }
         }
 
